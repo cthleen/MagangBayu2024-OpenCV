@@ -1,4 +1,31 @@
 import cv2
 import numpy as np
 
-# Tulis Kodingan kalian dibawah
+from ultralytics import YOLO
+model = YOLO("tugas/tugas3/coin.pt")
+
+# webcam ver
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+
+    results = model.predict(source=frame, save=False, save_txt=False, conf=0.7, verbose=False)
+
+    for r in results:
+        boxes = r.boxes
+
+        for box in boxes:
+            x1, y1, x2, y2 = box.xyxy[0]
+            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) 
+
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
+
+    cv2.imshow('frame', frame)
+
+    if cv2.waitKey(1) == 27 : break
+
+cap.release()
+cv2.destroyAllWindows()
+
+
